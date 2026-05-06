@@ -26,6 +26,14 @@ def env_list(name: str, default: str) -> list[str]:
     return [item.strip() for item in raw.split(",") if item.strip()]
 
 
+def csrf_origin_for_host(host: str) -> str | None:
+    if host == "*":
+        return None
+    if host.startswith("."):
+        return f"https://*{host}"
+    return f"https://{host}"
+
+
 def database_from_url(database_url: str | None) -> dict[str, object]:
     if not database_url:
         return {
@@ -67,6 +75,21 @@ if not SECRET_KEY:
 DEBUG = env_bool("DEBUG", default=False)
 
 ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", default="localhost,127.0.0.1")
+render_external_hostname = os.environ.get("RENDER_EXTERNAL_HOSTNAME", "").strip()
+if render_external_hostname and render_external_hostname not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(render_external_hostname)
+
+CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS", default="")
+if not CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS = [
+        origin
+        for origin in (csrf_origin_for_host(host) for host in ALLOWED_HOSTS)
+        if origin
+    ]
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SESSION_COOKIE_SECURE = env_bool("SESSION_COOKIE_SECURE", default=not DEBUG)
+CSRF_COOKIE_SECURE = env_bool("CSRF_COOKIE_SECURE", default=not DEBUG)
 
 
 # Application definition
