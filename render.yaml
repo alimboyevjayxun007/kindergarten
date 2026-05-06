@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: kindergarten-crm
+    runtime: python
+    buildCommand: bash build.sh
+    startCommand: gunicorn kindergarten_crm.wsgi:application
+    envVars:
+      - key: DEBUG
+        value: "0"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: TIME_ZONE
+        value: "Asia/Tashkent"
+      - key: WEB_CONCURRENCY
+        value: "1"
+      - key: SELF_PING_ENABLED
+        value: "1"
+      - key: SELF_PING_INTERVAL_SECONDS
+        value: "600"
+      - key: SELF_PING_URL
+        sync: false

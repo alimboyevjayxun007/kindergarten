@@ -11,7 +11,7 @@ from django.db import models
 from django.db.models import QuerySet
 from datetime import date
 
-from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
 from datetime import timedelta
 
 from django.shortcuts import get_object_or_404, redirect, render
@@ -61,6 +61,10 @@ class HomeView(TemplateView):
 		ctx = super().get_context_data(**kwargs)
 		ctx["kindergarten_location"] = KindergartenLocation.get_solo()
 		return ctx
+
+
+def health_check(request: HttpRequest) -> JsonResponse:
+	return JsonResponse({"status": "ok"})
 
 
 class RoleAwareLoginView(LoginView):

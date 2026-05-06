@@ -8,6 +8,7 @@ app_name = "core"
 
 urlpatterns = [
     path("", views.HomeView.as_view(), name="home"),
+    path("healthz/", views.health_check, name="health_check"),
     path("dashboard/", views.DashboardView.as_view(), name="dashboard"),
     path(
         "kindergarten/location/",
