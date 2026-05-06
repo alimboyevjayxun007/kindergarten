@@ -98,24 +98,37 @@ Repo ichida `render.yaml` va `build.sh` bor. Render deploy paytida `build.sh` qu
 ```bash
 pip install -r requirements.txt
 python manage.py collectstatic --no-input
-python manage.py migrate
 ```
 
 Start command:
 
 ```bash
-gunicorn kindergarten_crm.wsgi:application
+bash start.sh
 ```
+
+`start.sh` har startda `migrate` qiladi. Demo ma'lumotlar va demo userlar faqat birinchi marta yaratiladi.
 
 Render environment variables:
 
 ```env
 DEBUG=0
 SECRET_KEY=<Render generate value yoki uzun random qiymat>
+PYTHON_VERSION=3.12
+DATABASE_URL=sqlite:///./data/db.sqlite3
+SQLITE_DATA_DIR=data
 ALLOWED_HOSTS=.onrender.com
 CSRF_TRUSTED_ORIGINS=https://*.onrender.com
 TIME_ZONE=Asia/Tashkent
+SESSION_COOKIE_SECURE=1
+CSRF_COOKIE_SECURE=1
 WEB_CONCURRENCY=1
+```
+
+SQLite uchun Render'da persistent disk qo'shing:
+
+```text
+Mount path: /opt/render/project/src/data
+Size: 1 GB
 ```
 
 Agar o'z domeningiz bo'lsa:
@@ -127,7 +140,15 @@ CSRF_TRUSTED_ORIGINS=https://your-domain.com,https://*.onrender.com
 
 ### Render'da login qilib bo'lmasa
 
-Deploy bo'lgan yangi production bazada lokal kompyuterdagi `db.sqlite3` va lokal superuser bo'lmaydi. Shuning uchun Render'dagi database ichida alohida user yaratish kerak.
+Deploy bo'lgan yangi production bazada lokal kompyuterdagi `db.sqlite3` va lokal superuser bo'lmaydi. `start.sh` birinchi startda demo userlarni yaratadi.
+
+Demo loginlar:
+
+- `adminuser` / `Adminuser@12345` - Django admin panelga ham kira oladi
+- `educator` / `Educator@12345`
+- `accountant` / `Accountant@12345`
+
+Production uchun alohida superuser yaratish tavsiya qilinadi.
 
 Render Shell orqali superuser yaratish:
 
@@ -170,7 +191,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-Render'da PostgreSQL ishlatish tavsiya qilinadi. SQLite Render'da production uchun qulay emas, chunki disk doimiy saqlanmasligi mumkin.
+Render'da SQLite ishlatsangiz, persistent diskni `/opt/render/project/src/data` mount path bilan qo'shing va `DATABASE_URL=sqlite:///./data/db.sqlite3` qiling. Disk qo'shilmasa ilova ishlashi mumkin, lekin SQLite fayli deploy/restartlarda saqlanmasligi mumkin.
 
 ## Avtorizatsiya
 

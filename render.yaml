@@ -6,7 +6,7 @@ services:
     startCommand: bash start.sh
     disk:
       name: kindergarten-crm-sqlite
-      mountPath: /var/data
+      mountPath: /opt/render/project/src/data
       sizeGB: 1
     envVars:
       - key: DEBUG
@@ -16,7 +16,9 @@ services:
       - key: PYTHON_VERSION
         value: "3.12"
       - key: DATABASE_URL
-        value: "sqlite:///var/data/db.sqlite3"
+        value: "sqlite:///./data/db.sqlite3"
+      - key: SQLITE_DATA_DIR
+        value: "data"
       - key: ALLOWED_HOSTS
         value: ".onrender.com"
       - key: CSRF_TRUSTED_ORIGINS

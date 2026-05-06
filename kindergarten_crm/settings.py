@@ -44,13 +44,15 @@ def database_from_url(database_url: str | None) -> dict[str, object]:
     parsed = urlparse(database_url)
 
     if parsed.scheme.startswith("sqlite"):
-        # sqlite:///absolute/path OR sqlite:////absolute/path
+        # sqlite:///absolute/path OR sqlite:///./relative/path
         path = parsed.path
         if not path:
             return {
                 "ENGINE": "django.db.backends.sqlite3",
                 "NAME": BASE_DIR / "db.sqlite3",
             }
+        if path.startswith("/./"):
+            return {"ENGINE": "django.db.backends.sqlite3", "NAME": BASE_DIR / path[3:]}
         return {"ENGINE": "django.db.backends.sqlite3", "NAME": path}
 
     if parsed.scheme not in {"postgres", "postgresql"}:

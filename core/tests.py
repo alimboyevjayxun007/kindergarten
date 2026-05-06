@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import date
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
+from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
 
@@ -295,5 +296,17 @@ class RoleAccessTests(TestCase):
 				self.assertContains(resp, "Dashboard")
 				self.assertContains(resp, expected_text)
 				self.client.logout()
+
+
+class SetupRoleUsersCommandTests(TestCase):
+	def test_setup_role_users_creates_admin_superuser(self) -> None:
+		call_command("setup_role_users", verbosity=0)
+
+		User = get_user_model()
+		admin = User.objects.get(username="adminuser")
+
+		self.assertTrue(admin.is_staff)
+		self.assertTrue(admin.is_superuser)
+		self.assertTrue(admin.groups.filter(name=ROLE_ADMIN).exists())
 
 # Create your tests here.

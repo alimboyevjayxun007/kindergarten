@@ -8,7 +8,7 @@ from core.roles import ROLE_ACCOUNTANT, ROLE_ADMIN, ROLE_EDUCATOR
 
 
 ROLE_USERS = [
-	("adminuser", "admin@example.local", "Adminuser@12345", ROLE_ADMIN, False, False),
+	("adminuser", "admin@example.local", "Adminuser@12345", ROLE_ADMIN, True, True),
 	("educator", "educator@example.local", "Educator@12345", ROLE_EDUCATOR, False, False),
 	("accountant", "accountant@example.local", "Accountant@12345", ROLE_ACCOUNTANT, False, False),
 ]

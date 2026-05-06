@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 set -o errexit
 
-SEED_MARKER="${SEED_ONCE_MARKER:-/var/data/.demo_seeded}"
+DATA_DIR="${SQLITE_DATA_DIR:-data}"
+SEED_MARKER="${SEED_ONCE_MARKER:-$DATA_DIR/.demo_seeded}"
 
-mkdir -p "$(dirname "$SEED_MARKER")"
+mkdir -p "$DATA_DIR"
 
 python manage.py migrate
 
